@@ -1,0 +1,9 @@
+language: haskell
+install:
+  - "cabal install --dry-run -v3"
+  - "travis_retry cabal install --force-reinstalls"
+notifications:
+  email:
+    recipients: travis@silk.co
+    on_success: never
+    on_failure: change
