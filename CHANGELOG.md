@@ -1,3 +1,7 @@
+#### 0.1.0.2
+
+* Fix build on GHC-7.4
+
 #### 0.1.0.1
 
 * Add test suite and fix bugs that produced empty tag names.
