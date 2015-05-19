@@ -2,6 +2,7 @@
 {-# LANGUAGE
     FlexibleContexts
   , FlexibleInstances
+  , KindSignatures
   , OverlappingInstances
   , ScopedTypeVariables
   , TypeOperators
@@ -16,8 +17,8 @@ module Generics.XmlPickler
 import Data.Char (toLower)
 import Data.Text (Text, pack, unpack)
 import GHC.Generics
-import Generics.Deriving.ConNames
-import Text.XML.HXT.Arrow.Pickle.Schema
+import Generics.Deriving.ConNames (ConNames)
+import Text.XML.HXT.Arrow.Pickle.Schema (scAlt)
 import Text.XML.HXT.Arrow.Pickle.Xml
 
 -- | The generic XmlPickler class. This gives generic xml picklers for
@@ -49,7 +50,7 @@ instance (Constructor c, GXmlPickler f) => GXmlPickler (M1 C c f) where
   gxpicklef f = xpElem (formatElement $ conName (undefined :: M1 C c f p)) ((M1, unM1) `xpWrap` gxpicklef f)
 
 instance (Selector c, GXmlPickler f) => GXmlPickler (M1 S c f) where
-  gxpicklef f = xpElem (formatElement $ selName (undefined :: M1 S c f p)) ((M1, unM1) `xpWrap` gxpicklef f)
+  gxpicklef f = optElem ((M1, unM1) `xpWrap` gxpicklef f) (undefined :: M1 S c f p)
 
 -- | The generic pickler. Uses a tag for each constructor with the
 -- lower case constructor name, and a tag for each record field with
@@ -122,35 +123,41 @@ instance GXmlPickler (K1 i Text) where
 
 instance (XmlPickler a, Selector c) => GXmlPickler (M1 S c (K1 i (Maybe a))) where
   gxpicklef _ = (M1 . K1, unK1 . unM1)
-         `xpWrap` xpOption (xpElem (formatElement $ selName (undefined :: M1 S c f p)) xpickle)
+         `xpWrap` xpOption (optElem xpickle (undefined :: M1 S c f p))
 
 instance Selector c => GXmlPickler (M1 S c (K1 i (Maybe String))) where
   gxpicklef _ = (M1 . K1, unK1 . unM1)
-         `xpWrap` xpOption (xpElem (formatElement $ selName (undefined :: M1 S c f p)) xpText0)
+         `xpWrap` xpOption (optElem xpText0 (undefined :: M1 S c f p))
 
 instance Selector c => GXmlPickler (M1 S c (K1 i (Maybe Text))) where
   gxpicklef _ = (M1 . K1 . fmap pack, fmap unpack . unK1 . unM1)
-         `xpWrap` xpOption (xpElem (formatElement $ selName (undefined :: M1 S c f p)) xpText0)
+         `xpWrap` xpOption (optElem xpText0 (undefined :: M1 S c f p))
 
 -- * Utilities
 
 formatElement :: String -> String
-formatElement = headToLower
-              . stripLeadingAndTrailingUnderscore
+formatElement = headToLower . stripLeadingAndTrailingUnderscore
 
 headToLower :: String -> String
-headToLower []     = []
-headToLower (x:xs) = toLower x : xs
+headToLower l = case l of
+  []     -> []
+  (x:xs) -> toLower x : xs
 
 stripLeadingAndTrailingUnderscore :: String -> String
-stripLeadingAndTrailingUnderscore = stripLeadingUnderscore
-                                  . stripTrailingUnderscore
+stripLeadingAndTrailingUnderscore = stripLeadingUnderscore . stripTrailingUnderscore
 
 stripLeadingUnderscore :: String -> String
-stripLeadingUnderscore ('_':ls) = ls
-stripLeadingUnderscore ls       = ls
+stripLeadingUnderscore s = case s of
+  ('_':ls) -> ls
+  ls       -> ls
 
 stripTrailingUnderscore :: String -> String
-stripTrailingUnderscore ""         = ""
-stripTrailingUnderscore (x:'_':[]) = [x]
-stripTrailingUnderscore (x:xs)     = x : stripTrailingUnderscore xs
+stripTrailingUnderscore s = case s of
+  ""         -> ""
+  (x:'_':[]) -> [x]
+  (x:xs)     -> x : stripTrailingUnderscore xs
+
+optElem :: forall a s (t :: * -> (* -> *) -> * -> *) (f :: * -> *) b. Selector s => PU a -> t s f b -> PU a
+optElem x y = case formatElement (selName y) of
+  "" -> x
+  n  -> n `xpElem` x

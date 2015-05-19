@@ -3,7 +3,7 @@ version:             0.1.0.0
 description:         Generic generation of HXT XmlPickler instances using GHC Generics.
 synopsis:            Generic generation of HXT XmlPickler instances using GHC Generics.
 category:            XML, Data
-cabal-version:       >= 1.6
+cabal-version:       >= 1.8
 author:              Silk
 copyright:           (c) 2015, Silk
 maintainer:          code@silk.co
@@ -30,3 +30,17 @@ library
     , generic-deriving >= 1.6 && < 1.8
     , hxt >= 9.2 && < 9.4
     , text
+
+test-suite tests
+  ghc-options:       -Wall
+  hs-source-dirs:    tests
+  main-is:           Main.hs
+  type:              exitcode-stdio-1.0
+  build-depends:
+      base >= 4.4 && < 5
+    , generic-xmlpickler
+    , hxt >= 9.2 && < 9.4
+    , hxt-pickle-utils == 0.1.*
+    , tasty == 0.10.*
+    , tasty-hunit == 0.9.*
+    , tasty-th == 0.1.*
