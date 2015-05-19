@@ -1,7 +1,6 @@
 language: haskell
 install:
   - "cabal --version"
-  - "cabal install 'Cabal >= 1.18'"
   - "cabal install -v3 --dry-run"
   - "travis_retry cabal install --only-dependencies --force-reinstalls"
 script:
