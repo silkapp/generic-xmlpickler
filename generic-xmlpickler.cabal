@@ -30,6 +30,8 @@ library
     , generic-deriving >= 1.6 && < 1.8
     , hxt >= 9.2 && < 9.4
     , text
+  if impl(ghc < 7.6)
+    build-depends:   ghc-prim >= 0.2 && < 0.5
 
 test-suite tests
   ghc-options:       -Wall
@@ -44,3 +46,5 @@ test-suite tests
     , tasty == 0.10.*
     , tasty-hunit == 0.9.*
     , tasty-th == 0.1.*
+  if impl(ghc < 7.6)
+    build-depends:   ghc-prim >= 0.2 && < 0.5
