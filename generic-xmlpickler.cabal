@@ -26,7 +26,7 @@ library
   hs-source-dirs:    src
   exposed-modules:   Generics.XmlPickler
   build-depends:
-      base == 4.*
+      base >= 4.5 && < 4.9
     , generic-deriving >= 1.6 && < 1.8
     , hxt >= 9.2 && < 9.4
     , text
@@ -39,7 +39,7 @@ test-suite tests
   main-is:           Main.hs
   type:              exitcode-stdio-1.0
   build-depends:
-      base >= 4.4 && < 5
+      base >= 4.5 && < 5
     , generic-xmlpickler
     , hxt >= 9.2 && < 9.4
     , hxt-pickle-utils == 0.1.*
