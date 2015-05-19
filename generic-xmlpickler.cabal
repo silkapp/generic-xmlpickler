@@ -1,5 +1,5 @@
 name:                generic-xmlpickler
-version:             0.1.0.0
+version:             0.1.0.1
 description:         Generic generation of HXT XmlPickler instances using GHC Generics.
 synopsis:            Generic generation of HXT XmlPickler instances using GHC Generics.
 category:            XML, Data
