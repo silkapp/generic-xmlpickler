@@ -1,5 +1,5 @@
 name:                generic-xmlpickler
-version:             0.1.0.2
+version:             0.1.0.3
 description:         Generic generation of HXT XmlPickler instances using GHC Generics.
 synopsis:            Generic generation of HXT XmlPickler instances using GHC Generics.
 category:            XML, Data
@@ -27,7 +27,7 @@ library
   exposed-modules:   Generics.XmlPickler
   build-depends:
       base >= 4.5 && < 4.9
-    , generic-deriving >= 1.6 && < 1.8
+    , generic-deriving >= 1.6 && < 1.9
     , hxt >= 9.2 && < 9.4
     , text
   if impl(ghc < 7.6)
