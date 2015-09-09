@@ -153,9 +153,9 @@ stripLeadingUnderscore s = case s of
 
 stripTrailingUnderscore :: String -> String
 stripTrailingUnderscore s = case s of
-  ""         -> ""
-  (x:'_':[]) -> [x]
-  (x:xs)     -> x : stripTrailingUnderscore xs
+  ""      -> ""
+  [x,'_'] -> [x]
+  (x:xs)  -> x : stripTrailingUnderscore xs
 
 optElem :: forall a s (t :: * -> (* -> *) -> * -> *) (f :: * -> *) b. Selector s => PU a -> t s f b -> PU a
 optElem x y = case formatElement (selName y) of
