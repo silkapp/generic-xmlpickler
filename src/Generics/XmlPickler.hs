@@ -1,12 +1,16 @@
 {-# OPTIONS -fno-warn-orphans #-}
 {-# LANGUAGE
-    FlexibleContexts
+    CPP
+  , FlexibleContexts
   , FlexibleInstances
   , KindSignatures
   , OverlappingInstances
   , ScopedTypeVariables
   , TypeOperators
   #-}
+#if MIN_VERSION_base(4,9,0)
+{-# LANGUAGE DataKinds #-}
+#endif
 module Generics.XmlPickler
   ( gxpickle
   , GXmlPickler (..)
@@ -157,7 +161,11 @@ stripTrailingUnderscore s = case s of
   [x,'_'] -> [x]
   (x:xs)  -> x : stripTrailingUnderscore xs
 
+#if MIN_VERSION_base(4,9,0)
+optElem :: forall (t :: * -> Meta -> (* -> *) -> * -> *) i (s :: Meta) (f :: * -> *) p a. Selector s => PU a -> t i s f p -> PU a
+#else
 optElem :: forall a s (t :: * -> (* -> *) -> * -> *) (f :: * -> *) b. Selector s => PU a -> t s f b -> PU a
+#endif
 optElem x y = case formatElement (selName y) of
   "" -> x
   n  -> n `xpElem` x
