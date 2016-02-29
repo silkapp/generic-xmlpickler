@@ -4,12 +4,14 @@
   , FlexibleContexts
   , FlexibleInstances
   , KindSignatures
-  , OverlappingInstances
   , ScopedTypeVariables
   , TypeOperators
   #-}
 #if MIN_VERSION_base(4,9,0)
 {-# LANGUAGE DataKinds #-}
+#endif
+#if __GLASGOW_HASKELL__ < 710
+{-# LANGUAGE OverlappingInstances #-}
 #endif
 module Generics.XmlPickler
   ( gxpickle
@@ -119,21 +121,41 @@ instance (XmlPickler a, XmlPickler b) => XmlPickler (Either a b) where
 
 -- * GXmlPickler instance for String, Text and Maybes.
 
+#if __GLASGOW_HASKELL__ >= 710
+instance {-# OVERLAPS #-} GXmlPickler (K1 i String) where
+#else
 instance GXmlPickler (K1 i String) where
+#endif
   gxpicklef _ = (K1, unK1) `xpWrap` xpText0
 
+#if __GLASGOW_HASKELL__ >= 710
+instance {-# OVERLAPS #-} GXmlPickler (K1 i Text) where
+#else
 instance GXmlPickler (K1 i Text) where
+#endif
   gxpicklef _ = (K1 . pack, unpack . unK1) `xpWrap` xpText0
 
+#if __GLASGOW_HASKELL__ >= 710
+instance {-# OVERLAPS #-} (XmlPickler a, Selector c) => GXmlPickler (M1 S c (K1 i (Maybe a))) where
+#else
 instance (XmlPickler a, Selector c) => GXmlPickler (M1 S c (K1 i (Maybe a))) where
+#endif
   gxpicklef _ = (M1 . K1, unK1 . unM1)
          `xpWrap` xpOption (optElem xpickle (undefined :: M1 S c f p))
 
+#if __GLASGOW_HASKELL__ >= 710
+instance {-# OVERLAPS #-} Selector c => GXmlPickler (M1 S c (K1 i (Maybe String))) where
+#else
 instance Selector c => GXmlPickler (M1 S c (K1 i (Maybe String))) where
+#endif
   gxpicklef _ = (M1 . K1, unK1 . unM1)
          `xpWrap` xpOption (optElem xpText0 (undefined :: M1 S c f p))
 
+#if __GLASGOW_HASKELL__ >= 710
+instance {-# OVERLAPS #-} Selector c => GXmlPickler (M1 S c (K1 i (Maybe Text))) where
+#else
 instance Selector c => GXmlPickler (M1 S c (K1 i (Maybe Text))) where
+#endif
   gxpicklef _ = (M1 . K1 . fmap pack, fmap unpack . unK1 . unM1)
          `xpWrap` xpOption (optElem xpText0 (undefined :: M1 S c f p))
 
