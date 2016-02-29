@@ -1,3 +1,7 @@
+#### 0.1.0.4
+
+* Fix build on GHC 8.
+
 #### 0.1.0.3
 
 * Allow `generic-deriving 1.8.*`.
