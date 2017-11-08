@@ -11,6 +11,13 @@ homepage:            http://github.com/silkapp/generic-xmlpickler
 license:             BSD3
 license-file:        LICENSE
 build-type:          Simple
+tested-with:
+    GHC == 7.4.2
+  , GHC == 7.6.3
+  , GHC == 7.8.4
+  , GHC == 7.10.3
+  , GHC == 8.0.2
+  , GHC == 8.2.1
 
 extra-source-files:
   CHANGELOG.md
