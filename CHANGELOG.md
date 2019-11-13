@@ -1,3 +1,8 @@
+#### 0.1.0.5
+
+* Support up to GHC 8.8
+* Drop test dependency on `hxt-pickle-utils`
+
 #### 0.1.0.4
 
 * Fix build on GHC 8.

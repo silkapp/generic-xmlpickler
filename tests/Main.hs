@@ -14,8 +14,8 @@ import GHC.Generics (Generic)
 import Test.Tasty.HUnit
 import Test.Tasty.TH
 import Text.XML.HXT.Arrow.Pickle
-import Text.Xml.Pickle
 
+import PickleUtils
 import Generics.XmlPickler
 
 data SingleCons = SingleCons deriving (Show, Eq, Generic)
